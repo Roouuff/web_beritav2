@@ -35,7 +35,7 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="fw-bold">Topik yang Dipelajari</h2>
-            <p class="text-muted">Praktikum 11 — Pemrograman Web</p>
+            <p class="text-muted">Praktikum 15 — Pemrograman Web</p>
         </div>
         <div class="row g-4">
             <div class="col-md-4">

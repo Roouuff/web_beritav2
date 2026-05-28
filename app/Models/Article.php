@@ -19,4 +19,10 @@ class Article extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    // Relasi Many-to-Many ke model Tag
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

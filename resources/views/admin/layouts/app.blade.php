@@ -11,10 +11,7 @@
     <title>Admin Panel - Web Berita</title>
 
     <link href="{{ asset('sbadmin2/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="{{ asset('sbadmin2/css/sb-admin-2.min.css') }}" rel="stylesheet">
 </head>
 
@@ -59,8 +56,7 @@
                     <i class="fas fa-fw fa-newspaper"></i>
                     <span>Berita</span>
                 </a>
-                <div id="collapseBerita" class="collapse" aria-labelledby="headingBerita"
-                    data-parent="#accordionSidebar">
+                <div id="collapseBerita" class="collapse" aria-labelledby="headingBerita" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Menu Berita:</h6>
                         <a class="collapse-item" href="{{ route('articles.index') }}">Semua Berita</a>
@@ -76,6 +72,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::is('admin/tags*') ? 'active' : '' }}">
+                 <a class="nav-link" href="{{ route('tags.index') }}">
+                     <i class="fas fa-fw fa-hashtag"></i>
+                     <span>Tag Berita</span>
+                 </a>
+            </li>
+
             <hr class="sidebar-divider d-none d-md-block">
 
             <div class="text-center d-none d-md-inline">
@@ -84,7 +87,6 @@
 
         </ul>
         <div id="content-wrapper" class="d-flex flex-column">
-
             <div id="content">
 
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -102,16 +104,16 @@
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                                     {{ Auth::user()->name ?? 'Admin' }}
                                 </span>
-                                <img class="img-profile rounded-circle"
-                                    src="{{ asset('sbadmin2/img/undraw_profile.svg') }}">
+                                <img class="img-profile rounded-circle" src="{{ asset('sbadmin2/img/undraw_profile.svg') }}">
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profil
                                 </a>
+                                
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -122,11 +124,11 @@
                     </ul>
                 </nav>
                 <div class="container-fluid">
-
                     @yield('content')
+                </div>
 
-                </div>
-                </div>
+            </div>
+
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -134,14 +136,15 @@
                     </div>
                 </div>
             </footer>
-            </div>
+
         </div>
+    </div>
+
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -169,5 +172,6 @@
     <script src="{{ asset('sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('sbadmin2/js/sb-admin-2.min.js') }}"></script>
-    </body>
+</body>
+
 </html>

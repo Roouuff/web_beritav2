@@ -5,6 +5,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\ProfileController; // 1. IMPORT PROFILE CONTROLLER DI SINI
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,8 @@ Route::get('/tentang', function () {
     return view('user.tentang');
 });
 
+// TAMBAHKAN RUTE INI UNTUK DETAIL BERITA
+Route::get('/berita/{slug}', [HomeController::class, 'showArticle'])->name('berita.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,10 +43,15 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    // CRUD Resource dari modul untuk Pengguna, Kategori, & Berita
+    // CRUD Resource dari modul untuk Pengguna, Kategori, Berita, & Tag
     Route::resource('/admin/users', UserController::class);
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/articles', ArticleController::class);
+    Route::resource('/admin/tags', TagController::class);
+
+    // 2. TAMBAHKAN RUTE PROFIL DI SINI
+    Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/admin/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 

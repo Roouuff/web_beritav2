@@ -57,4 +57,31 @@ class User extends Authenticatable implements MustVerifyEmail
             ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    /**
+     * Model event untuk membuat data profil kosong secara otomatis
+     * sesaat setelah user baru berhasil terdaftar di database.
+     */
+    protected static function booted(): void
+    {
+        static::created(function ($user) {
+            $user->profile()->create();
+        });
+    }
+
+    /**
+     * Relasi One-to-One ke model Profile
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Relasi One-to-Many ke model Article
+     */
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
 }

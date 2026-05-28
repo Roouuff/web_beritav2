@@ -1,181 +1,108 @@
-Siaran langsung! Ini adalah isi lengkap file `README.md` yang sudah digabungkan dengan bagian **Lisensi & Penggunaan Akademik**.
-
-Bagian penutupnya sudah saya sesuaikan dengan teknologi asli yang kamu gunakan di proyek ini (yaitu menggunakan **PostgreSQL via Laravel Sail/Docker**, bukan MySQL, agar sinkron dengan file `.env` kamu).
-
-Kamu tinggal klik tombol **"Copy"** di pojok kanan atas, lalu timpa seluruh isi file `README.md` lama di VS Code-mu.
-
-```markdown
-# 📰 Web Berita Admin Panel — Praktikum 11 (Pemrograman Web)
+````markdown
+# 📰 Web Berita Admin Panel — Praktikum 15 & Mandiri
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org)
 [![Docker Sail](https://img.shields.io/badge/Laravel%20Sail-Docker-09D426?style=for-the-badge&logo=docker)](https://laravel.com/docs/11.x/sail)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-4.6%20%2F%205-563D7C?style=for-the-badge&logo=bootstrap)](https://getbootstrap.com)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-4.6-563D7C?style=for-the-badge&logo=bootstrap)](https://getbootstrap.com)
 
-Repository ini merupakan hasil pengembangan sistem manajemen konten (**CMS Web Berita**) pada Praktikum 11. Proyek ini mengintegrasikan mesin templat **Blade**, sistem Autentikasi tradisional Laravel, kontrol keamanan database, dan modifikasi penuh pada templat **SB Admin 2** untuk menghasilkan dashboard panel admin yang dinamis dan aman.
-
----
-
-## 🚀 Fitur Utama & Pembaruan Sistem
-
-Aplikasi ini tidak hanya menerapkan dasar integrasi tampilan, melainkan sudah dilengkapi dengan logika bisnis (_business logic_) yang kokoh sesuai dengan rubrik evaluasi:
-
-### 1. 🔐 Autentikasi & Proteksi Keamanan Akun
-
-- **Sistem Auth Tradisional:** Menggunakan arsitektur controller bawaan (`LoginController`, `RegisterController`) untuk alur masuk dan keluar sistem yang stabile.
-- **Password Hashing:** Semua kata sandi pengguna baru maupun perubahan sandi lama dienkripsi secara aman menggunakan `Hash::make()` sebelum masuk ke database.
-- **Fitur Cegah Self-Delete:** Sistem memiliki keamanan berlapis pada `UserController` yang mendeteksi sesi aktif dan melarang keras Admin menghapus akunnya sendiri demi mencegah kegagalan hak akses sistem.
-
-### 2. 🗂️ Manajemen Kategori dengan Slug Dinamis
-
-- **Automated Slug Generation:** Mengintegrasikan library `Str::slug()` sehingga setiap pembuatan atau pembaruan nama kategori otomatis dikonversi menjadi URL yang ramah SEO.
-- **Relational Integrity Protection:** Mekanisme pencegahan _error database constraint_ di mana kategori yang masih memiliki artikel terikat di dalamnya tidak akan diizinkan untuk dihapus.
-
-### 3. ✍️ Manajemen Berita Menyeluruh (Relasional CRUD)
-
-- **Eager Loading Optimization:** Penarikan data berita mengimplementasikan metode `Article::with(['category', 'user'])` untuk memangkas kueri database dan menghindari kendala performa _N+1 Query Problem_.
-- **Validasi Ketat Tugas Mandiri:** Kolom judul berita dilindungi oleh aturan validasi `min:10|max:255` untuk memastikan kualitas judul artikel yang layak dipublikasikan.
-
-### 4. 📊 Dashboard Ringkas & UX Informatif
-
-- **3 Stats Card Dinamis:** Mengganti komponen bawaan template lama menjadi 3 kartu metrik utama yang terhubung langsung ke database: **Total Pengguna**, **Total Kategori**, dan **Total Berita**.
-- **Unified Sidebar:** Integrasi navigasi terpadu berseragam bertuliskan **"WEB BERITA"** menggunakan komponen Bootstrap untuk kelancaran perpindahan halaman.
+Repository ini merupakan pengembangan lengkap dari sistem **CMS Web Berita**. Proyek ini telah melalui tahap pengembangan fitur mandiri yang mencakup manajemen profil penulis, sistem _tagging_ relasional, dan keamanan penyimpanan berkas.
 
 ---
 
-## 📂 Struktur Proyek Terkini
-```
+## 🚀 Fitur Utama Sistem
 
-praktikum-11/
+Selain fitur dasar CRUD, proyek ini kini mendukung kebutuhan operasional berita tingkat lanjut:
+
+### 1. ✍️ Manajemen Profil Penulis (One-to-One)
+
+- **Relasi Eloquent:** Integrasi penuh antara tabel `users` dan `profiles`.
+- **Edit Profil:** Admin/Penulis dapat memperbarui Nama, Nomor Telepon, dan Biografi secara langsung yang akan tampil secara dinamis pada halaman detail artikel publik.
+
+### 2. 🏷️ Sistem Tagging (Many-to-Many)
+
+- **Pivot Table:** Menggunakan tabel `article_tag` untuk menghubungkan artikel dengan banyak kategori tag.
+- **Dynamic Syncing:** Implementasi metode `sync()` untuk sinkronisasi tag saat proses edit data berita.
+
+### 3. 🛡️ Keamanan & Integrasi Media
+
+- **File Integrity:** Implementasi `Storage::disk('public')->delete()` untuk memastikan setiap penghapusan data berita secara otomatis menghapus file gambar fisik di server.
+- **Symlink Support:** Integrasi dengan `storage:link` untuk akses gambar yang efisien.
+
+### 4. 🖼️ Tampilan Publik & Admin Responsif
+
+- **Frontend Detail Page:** Halaman publik `/berita/{slug}` yang estetik, menampilkan gambar sampul (`img-fluid`), metadata kategori/tag, dan kotak informasi penulis lengkap.
+- **Smart Avatar:** Integrasi UI-Avatars untuk profil penulis di sidebar admin agar tampilan selalu profesional.
+
+---
+
+## 📂 Struktur Proyek
+
+```text
+praktikum-15/
 ├── app/
-│ ├── Http/
-│ │ └── Controllers/
-│ │ ├── Auth/
-│ │ │ ├── LoginController.php
-│ │ │ └── RegisterController.php
-│ │ ├── ArticleController.php ← Validasi min:10 & Eager Loading
-│ │ ├── CategoryController.php ← Auto Slug & Validasi Unique
-│ │ ├── UserController.php ← Password Hashing & Anti Self-Delete
-│ │ └── HomeController.php
-│ └── Models/
-│ ├── Article.php
-│ ├── Category.php
-│ └── User.php
-├── resources/
-│ └── views/
-│ ├── layouts/
-│ │ ├── admin.blade.php ← Layout SB Admin 2 ("WEB BERITA")
-│ │ ├── app.blade.php ← Layout Publik
-│ │ └── auth.blade.php ← Layout Sign-In/Sign-Up
-│ ├── admin/
-│ │ ├── dashboard.blade.php ← Komponen Tampilan 3 Card Utama
-│ │ ├── articles/ ← Form & Tabel Berita
-│ │ ├── categories/ ← Form & Tabel Kategori
-│ │ └── users/ ← Form & Tabel Pengguna
-│ └── public/
-│ └── home.blade.php
-├── routes/
-│ └── web.php ← Mapping Route Panel Admin & Resource
-└── public/
-└── sbadmin2/ ← Komponen Aset Statis Template
-
+│   ├── Http/Controllers/
+│   │   ├── ArticleController.php   ← Hapus berkas & Eager Loading
+│   │   ├── ProfileController.php   ← Edit profil (One-to-One)
+│   │   └── TagController.php       ← Manajemen Tagging
+│   └── Models/
+│       ├── Article.php             ← Relasi Many-to-Many (Tags)
+│       └── Profile.php             ← Relasi One-to-One (User)
+├── resources/views/
+│   ├── admin/
+│   │   ├── profiles/               ← Form edit profil
+│   │   ├── articles/               ← Detail berita & form
+│   │   └── tags/                   ← Kelola tag
+│   └── public/
+│       └── show.blade.php          ← Halaman detail berita publik
+└── storage/app/public/articles/    ← Penyimpanan fisik gambar
+```
 ````
 
 ---
 
-## 🛣️ Pemetaan Route Panel
+## 🛠️ Instalasi (Environment Laravel Sail)
 
-| Method | URI | Nama Route | Keterangan | Proteksi |
-| :--- | :--- | :--- | :--- | :--- |
-| **GET** | `/` | `home` | Halaman utama/Landing Page publik | Public |
-| **GET** | `/admin/dashboard` | `admin.dashboard` | Dashboard statistik (3 Card Utama) | Middleware Auth |
-| **GET/POST**| `/login` | `login` | Form dan Proses Masuk Akun | Middleware Guest |
-| **POST** | `/logout` | `logout` | Keluar dari sistem panel | Middleware Auth |
-| **CRUD** | `/admin/users` | `users.*` | Pengelolaan data pengguna (Admin) | Middleware Auth |
-| **CRUD** | `/admin/categories` | `categories.*` | Pengelolaan data kategori berita | Middleware Auth |
-| **CRUD** | `/admin/articles` | `articles.*` | Pengelolaan data artikel/berita | Middleware Auth |
+**1. Clone & Install**
 
----
-
-## 🛠️ Langkah Instalasi & Cara Menjalankan
-
-### Prasyarat Sistem
-* Docker Desktop terpasang dan berjalan aktif.
-* Composer (untuk instalasi dependensi awal).
-
-### Langkah-Langkah
-
-**1. Salin Repositori**
 ```bash
-git clone [https://github.com/frizennwave/praktikum-11.git](https://github.com/frizennwave/praktikum-11.git)
+git clone <url-repository>
 cd praktikum-11
-
-````
-
-**2. Siapkan File Environment**
-
-```bash
+composer install
 cp .env.example .env
 
 ```
 
-**3. Pasang Dependensi PHP Vendor**
+**2. Jalankan Sail & Setup**
 
 ```bash
-composer install
-
-```
-
-**4. Unduh & Setup Otomatis Komponen SB Admin 2**
-
-```bash
-chmod +x setup-sbadmin2.sh
-./setup-sbadmin2.sh
-
-```
-
-**5. Nyalakan Lingkungan Docker (Laravel Sail)**
-
-```bash
+# Pastikan Docker Desktop berjalan
 ./vendor/bin/sail up -d
 
-```
-
-**6. Jalankan Enkripsi Key & Migrasi Database Relasional**
-
-```bash
+# Generate key & migrasi
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate --seed
-
-```
-
-**7. Pembuatan Tautan Penyimpanan**
-
-```bash
 ./vendor/bin/sail artisan storage:link
 
 ```
 
-Akses aplikasi melalui peramban kesayangan Anda pada alamat: **`http://127.0.0.1:8080`** atau **`http://localhost:8080`**.
-
----
+Akses aplikasi pada: **`http://localhost:8080`**
 
 ---
 
 ## 📝 Lisensi & Penggunaan Akademik
 
-Proyek ini dikembangkan khusus untuk kebutuhan praktikum dan pembelajaran mata kuliah **Pemrograman Web Berbasis Framework** pada Tahun Ajaran **2025/2026**.
+Proyek ini dikembangkan untuk kebutuhan praktikum **Pemrograman Web Berbasis Framework** (2025/2026).
 
-Seluruh _source code_ di dalam repositori ini dapat digunakan sebagai:
+**Tujuan Penggunaan:**
 
-- Media pembelajaran dan referensi akademik tingkat lanjut.
-- Bahan eksplorasi implementasi Laravel Eloquent ORM (Relasi Berita, Kategori, dan Pengguna).
-- Contoh penerapan fitur keamanan _backend_ (Password Hashing dan Proteksi _Self-Delete_).
-- Sarana pengembangan kemampuan arsitektur backend berbasis framework Laravel.
+- Implementasi relasi database (One-to-One & Many-to-Many).
+- Praktek keamanan file pada sistem penyimpanan server.
+- Pengembangan antarmuka pengguna berbasis _Dynamic Data_.
 
-Diperbolehkan untuk memodifikasi, mempelajari, dan mengembangkan proyek ini lebih lanjut untuk kepentingan edukasi dengan tetap mencantumkan atribusi kepada pengembang asli.
+Hak cipta dilindungi sesuai ketentuan tugas praktikum. Modifikasi untuk kepentingan edukasi diperbolehkan dengan tetap menjaga etika atribusi.
 
-© 2026 — **Praktikum Pemrograman Web Berbasis Framework** Dibangun menggunakan **Laravel 12** dan **PostgreSQL (via Laravel Sail)** untuk kebutuhan pembelajaran akademik.
+© 2026 — **Praktikum Pemrograman Web Berbasis Framework** | **Laravel 12** & **PostgreSQL**
 
 ```
 
