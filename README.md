@@ -67,7 +67,7 @@ praktikum-15/
 
 ```bash
 git clone <url-repository>
-cd praktikum-11
+cd praktikum-15
 composer install
 cp .env.example .env
 
