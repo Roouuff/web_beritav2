@@ -1,109 +1,191 @@
-````markdown
 # 📰 Web Berita Admin Panel — Praktikum 15 & Mandiri
 
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org)
-[![Docker Sail](https://img.shields.io/badge/Laravel%20Sail-Docker-09D426?style=for-the-badge&logo=docker)](https://laravel.com/docs/11.x/sail)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-4.6-563D7C?style=for-the-badge&logo=bootstrap)](https://getbootstrap.com)
+[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge\&logo=laravel)](https://laravel.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge\&logo=postgresql)](https://www.postgresql.org)
+[![Laravel Sail](https://img.shields.io/badge/Laravel%20Sail-Docker-09D426?style=for-the-badge\&logo=docker)](https://laravel.com/docs/sail)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-4.6-563D7C?style=for-the-badge\&logo=bootstrap)](https://getbootstrap.com)
 
-Repository ini merupakan pengembangan lengkap dari sistem **CMS Web Berita**. Proyek ini telah melalui tahap pengembangan fitur mandiri yang mencakup manajemen profil penulis, sistem _tagging_ relasional, dan keamanan penyimpanan berkas.
-
----
-
-## 🚀 Fitur Utama Sistem
-
-Selain fitur dasar CRUD, proyek ini kini mendukung kebutuhan operasional berita tingkat lanjut:
-
-### 1. ✍️ Manajemen Profil Penulis (One-to-One)
-
-- **Relasi Eloquent:** Integrasi penuh antara tabel `users` dan `profiles`.
-- **Edit Profil:** Admin/Penulis dapat memperbarui Nama, Nomor Telepon, dan Biografi secara langsung yang akan tampil secara dinamis pada halaman detail artikel publik.
-
-### 2. 🏷️ Sistem Tagging (Many-to-Many)
-
-- **Pivot Table:** Menggunakan tabel `article_tag` untuk menghubungkan artikel dengan banyak kategori tag.
-- **Dynamic Syncing:** Implementasi metode `sync()` untuk sinkronisasi tag saat proses edit data berita.
-
-### 3. 🛡️ Keamanan & Integrasi Media
-
-- **File Integrity:** Implementasi `Storage::disk('public')->delete()` untuk memastikan setiap penghapusan data berita secara otomatis menghapus file gambar fisik di server.
-- **Symlink Support:** Integrasi dengan `storage:link` untuk akses gambar yang efisien.
-
-### 4. 🖼️ Tampilan Publik & Admin Responsif
-
-- **Frontend Detail Page:** Halaman publik `/berita/{slug}` yang estetik, menampilkan gambar sampul (`img-fluid`), metadata kategori/tag, dan kotak informasi penulis lengkap.
-- **Smart Avatar:** Integrasi UI-Avatars untuk profil penulis di sidebar admin agar tampilan selalu profesional.
+Repository ini merupakan pengembangan lengkap dari sistem **CMS Web Berita** berbasis Laravel.
+Proyek ini dikembangkan sebagai bagian dari praktikum **Pemrograman Web Berbasis Framework** dengan implementasi relasi database, manajemen media, dan tampilan admin responsif.
 
 ---
 
-## 📂 Struktur Proyek
+# 🚀 Fitur Utama Sistem
+
+Selain fitur dasar CRUD, sistem ini mendukung kebutuhan pengelolaan berita modern:
+
+## ✍️ 1. Manajemen Profil Penulis (One-to-One)
+
+* Relasi Eloquent antara tabel `users` dan `profiles`
+* Admin/Penulis dapat:
+
+  * Mengubah nama
+  * Mengubah nomor telepon
+  * Mengubah biografi
+* Informasi profil tampil otomatis pada halaman detail berita publik
+
+---
+
+## 🏷️ 2. Sistem Tagging (Many-to-Many)
+
+* Menggunakan pivot table `article_tag`
+* Satu artikel dapat memiliki banyak tag
+* Implementasi `sync()` Laravel untuk sinkronisasi tag saat edit artikel
+
+---
+
+## 🛡️ 3. Keamanan & Integrasi Media
+
+* Penghapusan gambar otomatis menggunakan:
+
+```php
+Storage::disk('public')->delete($article->image);
+```
+
+* Mendukung `storage:link`
+* Menjaga integritas file saat data berita dihapus
+
+---
+
+## 🖼️ 4. Tampilan Publik & Admin Responsif
+
+### Frontend Publik
+
+* Halaman detail berita:
+
+  * `/berita/{slug}`
+* Menampilkan:
+
+  * gambar cover responsif
+  * kategori
+  * tag
+  * informasi penulis
+
+### Dashboard Admin
+
+* Sidebar modern
+* Smart Avatar menggunakan UI-Avatars
+* Responsive layout berbasis Bootstrap 4
+
+---
+
+# 📂 Struktur Proyek
 
 ```text
-praktikum-15/
+web_beritav2/
 ├── app/
 │   ├── Http/Controllers/
-│   │   ├── ArticleController.php   ← Hapus berkas & Eager Loading
-│   │   ├── ProfileController.php   ← Edit profil (One-to-One)
-│   │   └── TagController.php       ← Manajemen Tagging
+│   │   ├── ArticleController.php
+│   │   ├── ProfileController.php
+│   │   └── TagController.php
+│   │
 │   └── Models/
-│       ├── Article.php             ← Relasi Many-to-Many (Tags)
-│       └── Profile.php             ← Relasi One-to-One (User)
+│       ├── Article.php
+│       ├── Profile.php
+│       └── Tag.php
+│
 ├── resources/views/
 │   ├── admin/
-│   │   ├── profiles/               ← Form edit profil
-│   │   ├── articles/               ← Detail berita & form
-│   │   └── tags/                   ← Kelola tag
-│   └── public/
-│       └── show.blade.php          ← Halaman detail berita publik
-└── storage/app/public/articles/    ← Penyimpanan fisik gambar
+│   │   ├── profile/
+│   │   ├── tags/
+│   │   └── articles/
+│   │
+│   └── user/
+│       └── berita/
+│           └── show.blade.php
+│
+└── storage/app/public/articles/
 ```
-````
 
 ---
 
-## 🛠️ Instalasi (Environment Laravel Sail)
+# 🛠️ Instalasi Project (Laravel Sail)
 
-**1. Clone & Install**
+## 1. Clone Repository
 
 ```bash
-git clone <url-repository>
-cd praktikum-15
-composer install
-cp .env.example .env
-
+git clone https://github.com/Roouuff/web_beritav2.git
+cd web_beritav2
 ```
 
-**2. Jalankan Sail & Setup**
+---
+
+## 2. Install Dependency
 
 ```bash
-# Pastikan Docker Desktop berjalan
-./vendor/bin/sail up -d
+composer install
+cp .env.example .env
+```
 
-# Generate key & migrasi
+---
+
+## 3. Jalankan Docker Sail
+
+```bash
+./vendor/bin/sail up -d
+```
+
+---
+
+## 4. Setup Laravel
+
+```bash
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate --seed
 ./vendor/bin/sail artisan storage:link
-
 ```
-
-Akses aplikasi pada: **`http://localhost:8080`**
 
 ---
 
-## 📝 Lisensi & Penggunaan Akademik
+# 🌐 Akses Aplikasi
 
-Proyek ini dikembangkan untuk kebutuhan praktikum **Pemrograman Web Berbasis Framework** (2025/2026).
-
-**Tujuan Penggunaan:**
-
-- Implementasi relasi database (One-to-One & Many-to-Many).
-- Praktek keamanan file pada sistem penyimpanan server.
-- Pengembangan antarmuka pengguna berbasis _Dynamic Data_.
-
-Hak cipta dilindungi sesuai ketentuan tugas praktikum. Modifikasi untuk kepentingan edukasi diperbolehkan dengan tetap menjaga etika atribusi.
-
-© 2026 — **Praktikum Pemrograman Web Berbasis Framework** | **Laravel 12** & **PostgreSQL**
-
+```text
+http://localhost
 ```
 
+atau:
+
+```text
+http://127.0.0.1
 ```
+
+---
+
+# 🧪 Teknologi yang Digunakan
+
+* Laravel 12
+* PostgreSQL
+* Laravel Sail (Docker)
+* Bootstrap 4
+* Blade Template Engine
+* Eloquent ORM
+
+---
+
+# 📝 Tujuan Pembelajaran
+
+Project ini dibuat untuk mempelajari:
+
+* Relasi database:
+
+  * One-to-One
+  * Many-to-Many
+* Upload & manajemen file Laravel
+* CRUD berbasis MVC
+* Dynamic UI menggunakan Blade
+* Pengelolaan media dan keamanan file server
+
+---
+
+# 📜 Lisensi Akademik
+
+Project ini digunakan untuk kebutuhan akademik dan praktikum mata kuliah:
+
+**Pemrograman Web Berbasis Framework**
+Tahun Akademik 2025/2026
+
+Penggunaan dan modifikasi untuk pembelajaran diperbolehkan dengan tetap menjaga atribusi sumber.
+
+---
+
+© 2026 — Laravel Web Berita Project
